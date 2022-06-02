@@ -15,19 +15,34 @@ const Todo = () => {
 
   const [todoName, setTodoName] = useState({});
 
+  
+
   const [formValue,setFormValue] = useState({});
 
-  const [updateValue,setUpdateValue] = useState({});
+
   
 
   const onSubmit = (event) => {
-    setFormValue({name:todoName})
+    //setFormValue({name:todoName})
     setFormValue({name:todoName})
     console.log(todoName,formValue);
     axios.post("http://localhost:8080/jobs", formValue).then((res) => {
       console.log(res,"in the post")
     }); 
   };
+
+  useEffect(() => {
+    setFormValue({name:todoName});
+  }, [todoName]);
+
+useEffect(() => {
+  async function fetchTodos() {
+    const result = await axios('http://localhost:8080/jobs')
+    //console.log(result.data,"Result of fetch")
+    setTodos(result.data)
+  }
+  fetchTodos()
+})
 
   const deleteIt = (event) =>{
         console.log("Delete Function")
@@ -37,19 +52,9 @@ const Todo = () => {
     });
   };
 
-  useEffect(()=>{
-    setUpdateValue({name:newName});
-  },[newName]);
-  useEffect(() => {
-      setFormValue({name:todoName});
-    }, [todoName]);
-  useEffect(() => {
-    async function fetchTodos() {
-      const result = await axios('http://localhost:8080/jobs')
-      setTodos(result.data)
-    }
-    fetchTodos()
-  })
+  
+
+  
 
   
   const getTask = () => {
@@ -64,7 +69,7 @@ const Todo = () => {
     setTodoName(event.target.value)
   };
 
-  var newName 
+ 
 
   return (
     <div>
@@ -79,9 +84,6 @@ const Todo = () => {
           </div>
 
           <div className="row">
-          {
-            console.log("google")
-          }
             <Form onSubmit={onSubmit}>
               <Input
                 type="text"
@@ -107,17 +109,13 @@ const Todo = () => {
 
                         <button type="button" class="btn btn-primary"  value = {todo.id} onClick={deleteIt}>Delete</button>
 
-                        <button type="button" class="btn btn-primary m-2"  value = {todo.id} onClick={(event)=>{
-                          newName = prompt("Update Todo")
-
-                          setUpdateValue({name:newName})
-                          console.log(todoName,updateValue);
-                          axios.put("http://localhost:8080/jobs/"+ todo.id, updateValue).then((res) => {
+                        <button key = {todo.id} type="button" class="btn btn-primary m-2"  value = {todo.id} onClick={(event)=>{
+                          const fame = prompt("Update Todo");
+                          axios.put("http://localhost:8080/jobs/"+ todo.id, {
+                            name : fame
+                          }).then((res) => {
                             console.log(res,"in the Put")
                           });
-                          
-                          
-
                         }}>Update</button>
 
                         </div>
