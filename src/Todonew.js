@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -16,25 +16,41 @@ const Todo = () => {
   const [todoName, setTodoName] = useState({});
 
   const [formValue,setFormValue] = useState({});
+
+  const [updateValue,setUpdateValue] = useState({});
   
 
   const onSubmit = (event) => {
     setFormValue({name:todoName})
+    setFormValue({name:todoName})
     console.log(todoName,formValue);
     axios.post("http://localhost:8080/jobs", formValue).then((res) => {
       console.log(res,"in the post")
-    });
-    getTask();
+    }); 
   };
 
   const deleteIt = (event) =>{
-    console.log("Delete Function")
-    console.log(event.target.value)
-    axios.delete("http://localhost:8080/jobs/"+event.target.value,).then((res)=>{
-      console.log(res)
-      getTask();
+        console.log("Delete Function")
+        console.log(event.target.value)
+        axios.delete("http://localhost:8080/jobs/"+event.target.value,).then((res)=>{
+        console.log(res)
     });
   };
+
+  useEffect(()=>{
+    setUpdateValue({name:newName});
+  },[newName]);
+  useEffect(() => {
+      setFormValue({name:todoName});
+    }, [todoName]);
+  useEffect(() => {
+    async function fetchTodos() {
+      const result = await axios('http://localhost:8080/jobs')
+      setTodos(result.data)
+    }
+    fetchTodos()
+  })
+
   
   const getTask = () => {
     console.log("Get Task Function is started 2");
@@ -47,6 +63,8 @@ const Todo = () => {
   const onChange = (event) => {
     setTodoName(event.target.value)
   };
+
+  var newName 
 
   return (
     <div>
@@ -69,7 +87,7 @@ const Todo = () => {
                 type="text"
                 name="name"
                 onChange={onChange}
-                value={todoName}
+
                 fluid
                 placeholder="Create Task"
               />
@@ -78,7 +96,6 @@ const Todo = () => {
           </div>
           <div >
             {
-                
                 todos.length >0 &&
                 todos.map((todo,index)=>{
                 return(
@@ -90,7 +107,18 @@ const Todo = () => {
 
                         <button type="button" class="btn btn-primary"  value = {todo.id} onClick={deleteIt}>Delete</button>
 
-                        <button type="button" class="btn btn-primary m-2"  value = {todo.id} onClick={deleteIt}>Update</button>
+                        <button type="button" class="btn btn-primary m-2"  value = {todo.id} onClick={(event)=>{
+                          newName = prompt("Update Todo")
+
+                          setUpdateValue({name:newName})
+                          console.log(todoName,updateValue);
+                          axios.put("http://localhost:8080/jobs/"+ todo.id, updateValue).then((res) => {
+                            console.log(res,"in the Put")
+                          });
+                          
+                          
+
+                        }}>Update</button>
 
                         </div>
                       </div>
