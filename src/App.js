@@ -1,13 +1,13 @@
 import React from "react";
 import "./App.css";
 import { Container } from "semantic-ui-react";
-import ToDoList from "./To-Do-List";
+import Todo from "./Todonew.js";
 
 function App() {
   return (
     <div>
       <Container>
-        <ToDoList />
+        <Todo />
       </Container>
     </div>
   );

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -26,6 +27,7 @@ func getJobs(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteJob(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("in the Delete Func")
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "DELETE")
@@ -54,11 +56,12 @@ func getJob(w http.ResponseWriter, r *http.Request) {
 }
 
 func createJob(w http.ResponseWriter, r *http.Request) {
+	fmt.Print("CreateJob Func\n")
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 	w.Header().Set("Access-Control-Allow-Headers", "*")
-	fmt.Print("CreateJob Func\n")
+
 	var job Job
 	_ = json.NewDecoder(r.Body).Decode(&job)
 	job.ID = strconv.Itoa(rand.Intn(100000))
@@ -92,6 +95,8 @@ func main() {
 	jobs = append(jobs, Job{ID: "1", Name: "Eat"})
 	jobs = append(jobs, Job{ID: "2", Name: "Code"})
 
+	handlers.AllowedOrigins([]string{"*"})
+
 	r.HandleFunc("/jobs", getJobs).Methods("GET")
 	r.HandleFunc("/jobs/{id}", getJob).Methods("GET")
 	r.HandleFunc("/jobs", createJob).Methods("POST")
@@ -99,5 +104,5 @@ func main() {
 	r.HandleFunc("/jobs/{id}", deleteJob).Methods("DELETE")
 
 	fmt.Printf("Starting server at 8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"}), handlers.AllowedOrigins([]string{"*"}))(r)))
 }

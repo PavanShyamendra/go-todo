@@ -14,8 +14,7 @@
 }
 
 body {
-  width: 80%;
-  margin: 0 auto;
+  
   margin-top: 50px;
 
   font-family: "Open Sans", sans-serif;
@@ -23,8 +22,26 @@ body {
 
 .header {
   text-align: center;
+  color: #371B58;
+  margin-top: 10px;
+  font-size: xx-large;
 }
 
 .row {
   padding-bottom: 50px;
+  text-align: center;
+  margin-left: 25px;
+
+}
+
+.buttons {
+  width: 200px;
+  margin: 0 auto;
+  display: inline;
+}
+  
+  .action_btn {
+  width: 200px;
+  margin: 0 auto;
+  display: inline;
 }
